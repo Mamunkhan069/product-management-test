@@ -118,37 +118,6 @@ To start the application run the following instraction and command
 ```
 
 ```
-3. sub-category ( Atfirst you need to login for authentication)
-    -for create
-        > Post method: http://localhost:3000/subcategories
-            > type : form-data
-            > required Field
-                - category_id(form categories table)
-                - name
-                - description
-                - image
-                - status(0/1)
-    -for getAll
-        > get method: http://localhost:3000/subcategories
-
-    -for getsingle
-        > get method: http://localhost:3000/subcategories/givesubcategories_id
-
-    -for update
-        > patch method: http://localhost:3000/subcategories/givesubcategories_id
-            > type : form-data
-            > required Field
-                - category_id(form categories table)
-                - name
-                - description
-                - image
-                - status(0/1)
-    -for delete
-        > delete method: http://localhost:3000/subcategories/givesubcategories_id
-
-```
-
-```
 4. product ( Atfirst you need to login for authentication)
     -for create
         > Post http://localhost:3000/product
@@ -189,6 +158,17 @@ To start the application run the following instraction and command
                 -status(0/1)
     -for delete
         > delete method: http://localhost:3000/product/product_id
+
+```
+
+```
+>>Get all products by category
+    >Get method: http://localhost:3000/categories/product/:givecategoriyid
+
+>>Get all products by status
+    >Get method:  http://localhost:3000/product/status/:givestatus
+>>>>Search all products
+    >Get method: http://localhost:3000/product/search/:searchquery
 ```
 
 ```

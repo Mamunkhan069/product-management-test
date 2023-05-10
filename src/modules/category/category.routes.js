@@ -20,13 +20,13 @@ module.exports = (app) => {
             createCategory
         );
 
-    // app.route("/categories/status/:status").get(
+    // app.route("/categories/status").get(
     //     AuthStrategy,
     //     getProductsByCategoryStatus
     // );
 
     app.route("/categories/:id")
         .get(getCategroyByID)
-        .patch(AuthStrategy, validate(categorySchema), updateCategory)
+        .patch(AuthStrategy, categoryImage.single("image"), updateCategory)
         .delete(AuthStrategy, deleteCategory);
 };

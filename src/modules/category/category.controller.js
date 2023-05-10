@@ -1,6 +1,5 @@
 const Product = require("../product/product.model");
 const ProductImage = require("../product/productImages/productImages.model");
-const Subcategory = require("../subcategory/subcategory.model");
 const Category = require("./category.model");
 
 async function getCategories(req, res) {
@@ -35,7 +34,7 @@ async function getCategories(req, res) {
 
 async function createCategory(req, res) {
     try {
-        const { name, description, status } = req.body;
+        const { name, description, status, parent_id } = req.body;
         console.log(req.body);
 
         const existCategory = await Category.findOne({ where: { name } });
@@ -45,6 +44,7 @@ async function createCategory(req, res) {
             name,
             description,
             status,
+            parent_id,
             image: req.file.filename === undefined ? "" : req.file.filename,
             created_by: req.user.id,
         });
@@ -73,22 +73,41 @@ async function getCategroyByID(req, res) {
 
 async function updateCategory(req, res) {
     try {
-        const { name, description } = req.body;
+        const { name, description, status, parent_id } = req.body;
         const { id } = req.params;
 
         const category = await Category.findOne({ where: { id } });
         if (!category) return res.status(404).send("Category not found");
-
-        const updateCategory = await category.update({
-            name,
-            description,
+        const catstatus = category.status;
+        const updatedCategory = await category.update({
+            name: name || category.name,
+            description: description || category.description,
+            status: status || category.status,
+            parent_id: parent_id || category.parent_id,
+            image: req.file ? req.file.filename : category.image,
             updated_by: req.user.id,
         });
 
-        res.status(200).send(updateCategory);
+        if (status !== catstatus) {
+            await updateChildCategoryStatuses(category.id, status);
+        }
+
+        res.status(200).send(updatedCategory);
     } catch (err) {
         console.log(err);
         res.status(500).send("Internal server error");
+    }
+}
+
+async function updateChildCategoryStatuses(parentCategoryId, newStatus) {
+    const childCategories = await Category.findAll({
+        where: { parent_id: parentCategoryId },
+    });
+    console.log("-----------get all chiled-------------", childCategories);
+    for (const childCategory of childCategories) {
+        await childCategory.update({ status: newStatus });
+        await updateChildCategoryStatuses(childCategory.id, newStatus);
+        console.log("-----------update child status-------------");
     }
 }
 

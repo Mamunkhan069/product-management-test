@@ -6,6 +6,7 @@ const {
     getProduct,
     updateProduct,
     deleteProduct,
+    getProductsByCategory,
 } = require("./product.controller");
 const { uploadProductImages } = require("../../config/lib/multer");
 const AuthStrategy = require("../user/user-authentication.middleware");
@@ -29,4 +30,9 @@ module.exports = (app) => {
         .get(AuthStrategy, getProduct)
         .patch(AuthStrategy, updateProduct)
         .delete(AuthStrategy, deleteProduct);
+
+    app.route("/categories/product/:categoryId").get(
+        AuthStrategy,
+        getProductsByCategory
+    );
 };

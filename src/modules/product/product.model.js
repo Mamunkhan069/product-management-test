@@ -1,89 +1,79 @@
-const sequelize = require('../../config/lib/sequelize');
-const { DataTypes, UUID, FLOAT } = require('sequelize');
-const Subcategory = require('../../modules/subcategory/subcategory.model')
-const Color = require('../../modules/color/color.model');
-const Size = require('../../modules/size/size.model');
-const Brand = require('../brand/brand.model');
+const sequelize = require("../../config/lib/sequelize");
+const { DataTypes, UUID, FLOAT } = require("sequelize");
+const Color = require("../../modules/color/color.model");
+const Size = require("../../modules/size/size.model");
+const Brand = require("../brand/brand.model");
 
 const Product = sequelize.define(
-    'products',
+    "products",
     {
         id: {
             allowNull: false,
-            primaryKey:true,
+            primaryKey: true,
             type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4
+            defaultValue: DataTypes.UUIDV4,
         },
-        sub_cat_id:{
-            type: DataTypes.UUID
-        },
-        product_code:{
+        product_code: {
             allowNull: false,
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
         },
-        name:{
+        name: {
             allowNull: false,
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
         },
         description: {
             allowNull: true,
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
         },
         brand_id: {
-            type: DataTypes.UUID
+            type: DataTypes.UUID,
         },
         color_id: {
-            type: DataTypes.UUID
+            type: DataTypes.UUID,
         },
         size_id: {
-            type: DataTypes.UUID
+            type: DataTypes.UUID,
         },
         price: {
-            type: DataTypes.FLOAT
+            type: DataTypes.FLOAT,
         },
         discount: {
-            type: DataTypes.FLOAT
+            type: DataTypes.FLOAT,
         },
         status: {
             allowNull: true,
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
         },
         created_by: {
             allowNull: true,
-            type: DataTypes.UUID
+            type: DataTypes.UUID,
         },
         updated_by: {
             allowNull: true,
-            type: DataTypes.UUID
-        }
+            type: DataTypes.UUID,
+        },
     },
     {
-        tableName: 'products',
+        tableName: "products",
         timestamps: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at'
+        createdAt: "created_at",
+        updatedAt: "updated_at",
     }
 );
 
-Subcategory.hasMany(Product, {
-    as: "products",
-    foreignKey: "sub_cat_id"
-});
-
 Brand.hasMany(Product, {
     as: "products",
-    foreignKey: "brand_id"
+    foreignKey: "brand_id",
 });
 
 Color.hasMany(Product, {
     as: "products",
-    foreignKey: "color_id"
+    foreignKey: "color_id",
 });
 
 Size.hasMany(Product, {
     as: "products",
-    foreignKey: "size_id"
+    foreignKey: "size_id",
 });
-
 
 module.exports = Product;

@@ -1,5 +1,6 @@
 const sequelize = require("../../config/lib/sequelize");
 const { DataTypes, UUID, BOOLEAN } = require("sequelize");
+const Product = require("../product/product.model");
 
 const Category = sequelize.define(
     "categories",
@@ -22,9 +23,13 @@ const Category = sequelize.define(
             allowNull: true,
             type: DataTypes.STRING,
         },
+        parent_id: {
+            allowNull: false,
+            type: DataTypes.UUID,
+        },
         status: {
             allowNull: true,
-            type: DataTypes.BOOLEAN,
+            type: DataTypes.STRING,
         },
         created_by: {
             allowNull: true,

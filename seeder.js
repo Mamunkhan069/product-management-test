@@ -14,7 +14,6 @@ async function init() {
 
     const User = require("./src/modules/user/user.model");
     const Category = require("./src/modules/category/category.model");
-    const Subcategory = require("./src/modules/subcategory/subcategory.model");
     const Brand = require("./src/modules/brand/brand.model");
     const Color = require("./src/modules/color/color.model");
     const Size = require("./src/modules/size/size.model");
@@ -40,17 +39,19 @@ async function init() {
     function categorySeeder(userId, callback) {
         const categories = [
             {
-                name: "Men's Fashion",
+                name: "cloths",
                 description: "T-Shirt, Polo Shirt, Pants",
                 status: "1",
+                parent_id: null,
                 image: "categoryImage1.jpg",
                 created_by: userId,
                 updated_by: userId,
             },
             {
-                name: "Women's Fashion",
-                description: "Sharee, Lehenga, Scart etc",
+                name: "Footware",
+                description: "sandal, shues, nagra",
                 status: "1",
+                parent_id: null,
                 image: "categoryImage2.jpg",
                 created_by: userId,
                 updated_by: userId,
@@ -59,6 +60,7 @@ async function init() {
                 name: "Electronics",
                 description: "TV, Blender, Mobile etc",
                 status: "0",
+                parent_id: null,
                 image: "categoryImage3.jpg",
                 created_by: userId,
                 updated_by: userId,
@@ -71,45 +73,6 @@ async function init() {
                 ignoreDuplicates: false,
             }).then(() => {
                 callback(null, userId);
-            });
-        });
-    }
-
-    function subcategorySeeder(userId, callback) {
-        Promise.all([
-            Category.findOne({ where: { name: "Men's Fashion" } }),
-            Category.findOne({ where: { name: "Women's Fashion" } }),
-        ]).then((values) => {
-            const [mensFashionCategory, womwnsFashionCategory] = values;
-
-            const subcategories = [
-                {
-                    category_id: mensFashionCategory.id,
-                    name: "T-shirt",
-                    description: "Men t-shirt sub-category",
-                    image: "shirt.jpg",
-                    status: 1,
-                    created_by: userId,
-                    updated_by: userId,
-                },
-                {
-                    category_id: womwnsFashionCategory.id,
-                    name: "Sharee",
-                    description: "Women saree sub-category",
-                    image: "sharee.jpg",
-                    status: 0,
-                    created_by: userId,
-                    updated_by: userId,
-                },
-            ];
-
-            Subcategory.destroy({ truncate: { cascade: true } }).then(() => {
-                Subcategory.bulkCreate(subcategories, {
-                    returning: true,
-                    ignoreDuplicates: false,
-                }).then(() => {
-                    callback(null, userId);
-                });
             });
         });
     }
@@ -212,36 +175,35 @@ async function init() {
 
     function productSeeder(userId, callback) {
         Promise.all([
-            Subcategory.findOne({ where: { name: "T-shirt" } }),
-            Subcategory.findOne({ where: { name: "Sharee" } }),
             Brand.findOne({ where: { name: "Easy" } }),
             Color.findOne({ where: { name: "Red" } }),
             Size.findOne({ where: { name: "40" } }),
         ]).then((values) => {
-            const [tshirtSubcategory, shareeSubcategory, brand, color, size] =
-                values;
+            const [brand, color, size] = values;
 
             const products = [
                 {
-                    sub_cat_id: tshirtSubcategory.id,
                     product_code: "1111",
-                    name: "casual",
+                    name: "casual shirt",
                     description: "Men casual t-shirt",
                     brand_id: brand.id,
                     color_id: color.id,
                     size_id: size.id,
+                    price: 1000,
+                    discount: 5,
                     status: 1,
                     created_by: userId,
                     updated_by: userId,
                 },
                 {
-                    sub_cat_id: shareeSubcategory.id,
                     product_code: "2222",
-                    name: "jamdani",
-                    description: "women samdani sharee ",
+                    name: "casual shues",
+                    description: "mens casual shues ",
                     brand_id: brand.id,
                     color_id: color.id,
                     size_id: size.id,
+                    price: 1000,
+                    discount: 5,
                     status: 0,
                     created_by: userId,
                     updated_by: userId,
@@ -281,13 +243,13 @@ async function init() {
                 },
                 {
                     product_id: productTwo.id,
-                    image: "jamdanisharee1.jpg",
+                    image: "casualshue1.jpg",
                     created_by: userId,
                     updated_by: userId,
                 },
                 {
                     product_id: productTwo.id,
-                    image: "jamdanisharee2.jpg",
+                    image: "casualshue2.jpg",
                     created_by: userId,
                     updated_by: userId,
                 },
@@ -309,7 +271,7 @@ async function init() {
             Product.findOne({ where: { product_code: "1111" } }),
             Product.findOne({ where: { product_code: "2222" } }),
 
-            Category.findOne({ where: { name: "Men's Fashion" } }),
+            Category.findOne({ where: { name: "cloths" } }),
         ]).then((values) => {
             const [product1, product2, category] = values;
 
@@ -341,7 +303,6 @@ async function init() {
         [
             userSeeder,
             categorySeeder,
-            subcategorySeeder,
             brandSeeder,
             colorSeeder,
             sizeSeeder,
